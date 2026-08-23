@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เกมตกตะกอน - Precipitation Lab</title>
+<style>
+  :root{
+    --bg:#f5f7f8;
+    --card:#ffffff;
+    --ink:#1e293b;
+    --ink-soft:#64748b;
+    --line:#e2e8f0;
+    --teal:#0f766e;
+    --teal-soft:#e6f4f2;
+    --water-top:#ecfeff;
+    --water-bot:#cffafe;
+    --rim:#94a3b8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    padding:28px 16px 60px;
+  }
+  .wrap{width:100%;max-width:820px;}
+  header{margin-bottom:18px;}
+  h1{
+    font-size:1.5rem;
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+  }
+  .sub{color:var(--ink-soft);font-size:.92rem;line-height:1.5;margin:0;}
+
+  .beaker-shell{
+    position:relative;
+    width:100%;
+    aspect-ratio:760/430;
+    border-radius:14px 14px 22px 22px;
+    background:var(--rim);
+    padding:0 10px 12px;
+    margin-top:18px;
+  }
+  .beaker-shell::before{ /* left rim cap */
+    content:"";
+    position:absolute;
+    top:-6px;left:6px;
+    width:12px;height:20px;
+    border-radius:6px;
+    background:#7c8b9c;
+  }
+  .beaker-shell::after{
+    content:"";
+    position:absolute;
+    top:-6px;right:6px;
+    width:12px;height:20px;
+    border-radius:6px;
+    background:#7c8b9c;
+  }
+  #tank{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    border-radius:6px 6px 16px 16px;
+    background:linear-gradient(180deg,var(--water-top),var(--water-bot));
+  }
+  .tank-label{
+    position:absolute;
+    right:12px;
+    bottom:10px;
+    color:var(--teal);
+    font-weight:700;
+    font-size:1rem;
+    opacity:.55;
+    letter-spacing:.02em;
+    pointer-events:none;
+  }
+
+  .ion{
+    position:absolute;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,.55);
+    font-weight:600;
+    line-height:1;
+    user-select:none;
+    pointer-events:none;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  .precip{
+    position:absolute;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#ffffff;
+    border:2px solid #cbd5e1;
+    color:#334155;
+    font-weight:700;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    user-select:none;
+    pointer-events:none;
+    box-shadow:0 2px 5px rgba(30,41,59,.12);
+  }
+
+  .controls{
+    margin-top:18px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 16px;
+  }
+  .controls h2{
+    font-size:.8rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--ink-soft);
+    margin:0 0 10px;
+    font-weight:600;
+  }
+  .compound-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .compound-btn{
+    border:1px solid var(--line);
+    background:#fafbfc;
+    color:var(--ink);
+    padding:8px 14px;
+    border-radius:8px;
+    font-size:.92rem;
+    cursor:pointer;
+    transition:border-color .15s, background .15s, transform .1s;
+  }
+  .compound-btn:hover{border-color:var(--teal);background:var(--teal-soft);}
+  .compound-btn:active{transform:scale(.96);}
+
+  .toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:14px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .reset-btn{
+    border:1px solid var(--teal);
+    background:#fff;
+    color:var(--teal);
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:.9rem;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .reset-btn:hover{background:var(--teal-soft);}
+  .score{
+    font-size:.88rem;
+    color:var(--ink-soft);
+  }
+  .score b{color:var(--teal);font-size:1rem;}
+
+  .legend{
+    margin-top:14px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 16px;
+    font-size:.8rem;
+    color:var(--ink-soft);
+  }
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+  .hint{
+    margin-top:10px;
+    font-size:.82rem;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🧪 เกมตกตะกอน — Precipitation Lab</h1>
+    <p class="sub">กดปุ่มสารเพื่อละลายลงในน้ำ ไอออนจะแยกตัวลอยไปมา ถ้าไอออนคู่ที่ชนกันเกิดสารประกอบที่ไม่ละลายน้ำ จะรวมกันเป็นตะกอนสีขาวจมลงก้นบีกเกอร์</p>
+  </header>
+
+  <div class="beaker-shell">
+    <div id="tank">
+      <div class="tank-label">H₂O</div>
+    </div>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="controls">
+    <h2>เลือกสารที่จะละลาย</h2>
+    <div class="compound-grid" id="compoundGrid"></div>
+    <div class="toolbar">
+      <button class="reset-btn" id="resetBtn">↺ Reset</button>
+      <div class="score">ตะกอนที่เกิดขึ้น: <b id="scoreVal">0</b></div>
+    </div>
+  </div>
+
+  <p class="hint">หมายเหตุ: กติกาการละลาย/ตกตะกอนอิงกฎการละลายของสารประกอบไอออนิกแบบย่อ (คาร์บอเนตส่วนใหญ่ไม่ละลาย, แคลเซียมซัลเฟตละลายได้น้อย ส่วนแอมโมเนียม โซเดียม ไนเตรต และคลอไรด์ทั่วไปละลายน้ำได้ดี)</p>
+</div>
+
+<script>
+// ---------- Chemistry data ----------
+const ION_COLOR = {
+  'Ca2+':'#f59e0b',
+  'Mg2+':'#10b981',
+  'NH4+':'#ec4899',
+  'Na+':'#fb7185',
+  'Cl-':'#a78bfa',
+  'CO3^2-':'#3b82f6',
+  'SO4^2-':'#06b6d4',
+  'NO3-':'#64748b'
+};
+const ION_LABEL = {
+  'Ca2+':'Ca²⁺',
+  'Mg2+':'Mg²⁺',
+  'NH4+':'NH₄⁺',
+  'Na+':'Na⁺',
+  'Cl-':'Cl⁻',
+  'CO3^2-':'CO₃²⁻',
+  'SO4^2-':'SO₄²⁻',
+  'NO3-':'NO₃⁻'
+};
+
+const COMPOUNDS = {
+  'CaCl2':  { cation:{type:'Ca2+',n:1}, anion:{type:'Cl-',n:2} },
+  'NH4Cl':  { cation:{type:'NH4+',n:1}, anion:{type:'Cl-',n:1} },
+  'MgCl2':  { cation:{type:'Mg2+',n:1}, anion:{type:'Cl-',n:2} },
+  'Na2CO3': { cation:{type:'Na+',n:2}, anion:{type:'CO3^2-',n:1} },
+  'Na2SO4': { cation:{type:'Na+',n:2}, anion:{type:'SO4^2-',n:1} },
+  'NaNO3':  { cation:{type:'Na+',n:1}, anion:{type:'NO3-',n:1} },
+};
+
+// cation_anion -> precipitate formula (only insoluble pairs listed)
+const PRECIPITATES = {
+  'Ca2+_CO3^2-':'CaCO₃',
+  'Ca2+_SO4^2-':'CaSO₄',
+  'Mg2+_CO3^2-':'MgCO₃',
+};
+
+// ---------- Setup UI ----------
+const grid = document.getElementById('compoundGrid');
+Object.keys(COMPOUNDS).forEach(name=>{
+  const b = document.createElement('button');
+  b.className = 'compound-btn';
+  b.textContent = name.replace(/(\d+)/g, m=>toSub(m));
+  b.addEventListener('click', ()=>dissolve(name));
+  grid.appendChild(b);
+});
+function toSub(digits){
+  const map={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+  return digits.split('').map(d=>map[d]).join('');
+}
+
+const legend = document.getElementById('legend');
+Object.keys(ION_COLOR).forEach(t=>{
+  const s=document.createElement('span');
+  s.innerHTML = `<span class="dot" style="background:${ION_COLOR[t]}"></span>${ION_LABEL[t]}`;
+  legend.appendChild(s);
+});
+
+const tank = document.getElementById('tank');
+const scoreVal = document.getElementById('scoreVal');
+let score = 0;
+
+// ---------- Simulation state ----------
+let ions = [];      // floating ions {id,type,el,x,y,vx,vy,r}
+let settles = [];   // {x,y,r} settled precipitate footprints, for stacking placement
+let idCounter = 0;
+
+function tankSize(){
+  const r = tank.getBoundingClientRect();
+  return {w:r.width, h:r.height};
+}
+
+function dissolve(name){
+  const c = COMPOUNDS[name];
+  spawnIons(c.cation.type, c.cation.n);
+  spawnIons(c.anion.type, c.anion.n);
+}
+
+function spawnIons(type, n){
+  const {w,h} = tankSize();
+  const r = 26;
+  for(let i=0;i<n;i++){
+    const el = document.createElement('div');
+    el.className = 'ion';
+    el.style.width = el.style.height = r*2+'px';
+    el.style.border = `2px solid ${ION_COLOR[type]}`;
+    el.style.color = '#1e293b';
+    el.style.fontSize = '.85rem';
+    el.textContent = ION_LABEL[type];
+    tank.appendChild(el);
+
+    const x = r + Math.random()*(w-2*r);
+    const y = r + Math.random()*(h-2*r);
+    const angle = Math.random()*Math.PI*2;
+    const speed = 0.5 + Math.random()*0.6;
+    ions.push({
+      id:idCounter++, type, el, x, y, r,
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed
+    });
+  }
+}
+
+function resetAll(){
+  ions.forEach(ion=>ion.el.remove());
+  ions = [];
+  document.querySelectorAll('.precip').forEach(e=>e.remove());
+  settles = [];
+  score = 0;
+  scoreVal.textContent = '0';
+}
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+function precipKey(typeA, typeB){
+  // one of typeA/typeB is cation, other anion; cations have '+' , anions have '-'
+  const cat = typeA.includes('+') ? typeA : typeB;
+  const an  = typeA.includes('-') ? typeA : typeB;
+  return cat+'_'+an;
+}
+
+function isCation(type){ return type.includes('+'); }
+
+// find a free x slot on the floor for a new settled precipitate
+function findSettleX(w, r){
+  // try random spots, avoid heavy overlap with existing settles
+  for(let attempt=0; attempt<20; attempt++){
+    const x = r + Math.random()*(w-2*r);
+    let ok = true;
+    for(const s of settles){
+      const dx = x-s.x;
+      if(Math.abs(dx) < (r+s.r)*0.7){ ok=false; break; }
+    }
+    if(ok) return x;
+  }
+  return r + Math.random()*(w-2*r);
+}
+
+function spawnPrecipitate(formula, x, y){
+  const {w} = tankSize();
+  const r = 30;
+  const el = document.createElement('div');
+  el.className = 'precip';
+  el.style.width = el.style.height = r*2+'px';
+  el.style.fontSize = '.8rem';
+  el.textContent = formula;
+  tank.appendChild(el);
+  const targetX = findSettleX(w, r);
+  const p = { el, x, y, targetX, r, vy:0.3, state:'falling' };
+  precipList.push(p);
+  score++;
+  scoreVal.textContent = String(score);
+}
+let precipList = [];
+
+// ---------- Physics loop ----------
+function step(){
+  const {w,h} = tankSize();
+
+  // move floating ions
+  for(const ion of ions){
+    ion.x += ion.vx;
+    ion.y += ion.vy;
+    if(ion.x - ion.r < 0){ ion.x = ion.r; ion.vx *= -1; }
+    if(ion.x + ion.r > w){ ion.x = w-ion.r; ion.vx *= -1; }
+    if(ion.y - ion.r < 0){ ion.y = ion.r; ion.vy *= -1; }
+    // floor limited by settled pile height near that x -- simple: floor = h
+    if(ion.y + ion.r > h){ ion.y = h-ion.r; ion.vy *= -1; }
+  }
+
+  // ion-ion collisions
+  const toRemove = new Set();
+  for(let i=0;i<ions.length;i++){
+    if(toRemove.has(i)) continue;
+    for(let j=i+1;j<ions.length;j++){
+      if(toRemove.has(j)) continue;
+      const a = ions[i], b = ions[j];
+      const dx = b.x-a.x, dy = b.y-a.y;
+      const dist = Math.sqrt(dx*dx+dy*dy);
+      if(dist < a.r+b.r && dist > 0.0001){
+        const aIsCation = isCation(a.type), bIsCation = isCation(b.type);
+        if(aIsCation !== bIsCation){
+          const key = precipKey(a.type,b.type);
+          if(PRECIPITATES[key]){
+            // form precipitate
+            toRemove.add(i); toRemove.add(j);
+            const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+            a.el.remove(); b.el.remove();
+            spawnPrecipitate(PRECIPITATES[key], mx, my);
+            continue;
+          }
+        }
+        // elastic-ish bounce: swap velocities along normal
+        const nx=dx/dist, ny=dy/dist;
+        const overlap = (a.r+b.r-dist)/2;
+        a.x -= nx*overlap; a.y -= ny*overlap;
+        b.x += nx*overlap; b.y += ny*overlap;
+        const tmpvx=a.vx, tmpvy=a.vy;
+        a.vx=b.vx; a.vy=b.vy;
+        b.vx=tmpvx; b.vy=tmpvy;
+      }
+    }
+  }
+  if(toRemove.size){
+    ions = ions.filter((_,idx)=>!toRemove.has(idx));
+  }
+
+  // render floating ions
+  for(const ion of ions){
+    ion.el.style.transform = `translate(${ion.x-ion.r}px, ${ion.y-ion.r}px)`;
+  }
+
+  // precipitates: fall then settle
+  for(const p of precipList){
+    if(p.state==='falling'){
+      p.vy += 0.06;
+      p.y += p.vy;
+      p.x += (p.targetX-p.x)*0.02;
+      const floorY = h - p.r - settleStack(p);
+      if(p.y >= floorY){
+        p.y = floorY;
+        p.state = 'settled';
+        settles.push({x:p.x, r:p.r});
+      }
+    }
+    p.el.style.transform = `translate(${p.x-p.r}px, ${p.y-p.r}px)`;
+  }
+
+  requestAnimationFrame(step);
+}
+
+function settleStack(p){
+  // if there's already a settled precipitate near this x, stack on top of it
+  let extra = 0;
+  for(const s of settles){
+    if(Math.abs(s.x-p.x) < (s.r+p.r)*0.6){
+      extra = Math.max(extra, s.r*1.5);
+    }
+  }
+  return extra;
+}
+
+requestAnimationFrame(step);
+</script>
+</body>
+</html>
