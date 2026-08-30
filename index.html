@@ -39,20 +39,13 @@ button{font:inherit}
 }
 .brand h1{font-family:var(--font-display);font-size:1.2rem;margin:0;font-weight:700;letter-spacing:.2px}
 .sub{margin:2px 0 0;color:var(--muted);font-size:.76rem}
-.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.mode-tabs{display:flex;gap:3px;padding:4px;border:1px solid var(--line);background:var(--card-soft);border-radius:13px}
-.mode-btn{border:0;background:transparent;color:var(--muted);padding:9px 14px;border-radius:10px;font-size:.8rem;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
-.mode-btn:hover{color:var(--ink)}
-.mode-btn.active{background:#ffffff;color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan-line)}
 .fs-btn{border:1px solid var(--line);background:var(--card-soft);color:var(--muted);width:42px;height:42px;border-radius:11px;cursor:pointer;font-size:1.05rem;display:flex;align-items:center;justify-content:center;transition:.15s;flex:none}
 .fs-btn:hover{border-color:var(--cyan-line);color:var(--cyan)}
 
 /* ---------- shared card ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 10px 30px -18px rgba(15,23,42,.14)}
-.mode-panel{display:none}.mode-panel.active{display:block;animation:fadeIn .25s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-/* ---------- normal mode: beaker ---------- */
+/* ---------- beaker ---------- */
 .lab{padding:10px}
 .beaker-shell{
   position:relative;width:100%;aspect-ratio:16/9;border-radius:16px 16px 26px 26px;
@@ -74,9 +67,9 @@ button{font:inherit}
 .precip{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f4f7fb;border:1px solid #cbd5e1;color:#1f2937;font-weight:800;user-select:none;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 4px rgba(245,178,60,.12)}
 @keyframes precipSettle{0%{box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 12px rgba(245,178,60,.4)}100%{box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 4px rgba(245,178,60,.12)}}
 .precip.landed{animation:precipSettle .5s ease-out}
-.hud{display:flex;justify-content:space-between;align-items:center;padding:11px 4px 2px;font-size:.8rem;color:var(--muted)}
+.hud{display:flex;justify-content:space-between;align-items:center;padding:11px 4px 2px;font-size:.8rem;color:var(--muted);gap:10px}
 .hud strong{color:var(--ink)}
-.score-pill{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.score-pill{display:flex;align-items:center;gap:6px;color:var(--muted);white-space:nowrap}
 .score-pill b{font-family:var(--font-display);color:var(--amber);font-size:1rem}
 .legend{display:flex;flex-wrap:wrap;gap:6px 10px;padding:10px 4px 2px;color:var(--muted);font-size:.7rem}
 .legend span{display:inline-flex;align-items:center;gap:5px;background:var(--card-soft);border:1px solid var(--line-soft);padding:4px 8px;border-radius:20px}
@@ -94,17 +87,24 @@ button{font:inherit}
 .compound-btn:hover,.compound-btn:active{border-color:var(--cyan-line);background:var(--cyan-soft);transform:translateY(-1px)}
 .compound-btn .ripple{position:absolute;border-radius:50%;background:rgba(15,118,110,.35);transform:scale(0);pointer-events:none;animation:rippleOut .55s ease-out forwards}
 @keyframes rippleOut{to{transform:scale(3.2);opacity:0}}
-.toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:13px;color:var(--muted);font-size:.72rem;gap:10px;flex-wrap:wrap}
+
+.speed-row{margin-top:16px}
+.speed-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.speed-btn{
+  border:1px solid var(--line);background:var(--card-soft);color:var(--muted);
+  padding:9px 6px;border-radius:11px;cursor:pointer;font-weight:700;font-size:.78rem;font-family:var(--font-display);
+  transition:.15s;
+}
+.speed-btn:hover{border-color:var(--cyan-line);color:var(--cyan)}
+.speed-btn.active{background:var(--cyan-soft);border-color:var(--cyan-line);color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan-line)}
+
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--muted);font-size:.72rem;gap:10px;flex-wrap:wrap}
 .toolbar-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .reset-btn{border:1px solid var(--line);background:var(--card-soft);color:var(--ink);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;transition:.15s}
 .reset-btn:hover{border-color:var(--cyan-line);color:var(--cyan)}
 .hint{margin:11px 0 0;color:var(--muted-dim);font-size:.71rem;line-height:1.6}
 
 /* ---------- Fullscreen (simulated, works across mobile browsers) ---------- */
-.app.app-fs{
-  position:fixed;inset:0;z-index:9996;overflow:auto;background:var(--bg-glow),var(--bg);
-  padding:16px 14px 40px;max-width:none;width:100%;height:100%;margin:0;
-}
 #labFullscreenWrap.lab-fs{
   position:fixed;inset:0;z-index:9997;background:var(--bg-glow),var(--bg);
   padding:12px;overflow:auto;display:flex;flex-direction:column;gap:10px;
@@ -119,71 +119,10 @@ button{font:inherit}
 }
 .fs-exit.show{display:block}
 
-/* =========================================================
-   AR MODE
-   ========================================================= */
-.ar-stage{position:relative;min-height:82vh;overflow:hidden;background:#05070c;border-radius:var(--radius)}
-#cameraVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:none;filter:saturate(1.05) contrast(1.02)}
-
-.ar-header{position:absolute;top:12px;left:12px;right:12px;z-index:20;display:flex;justify-content:space-between;gap:8px;pointer-events:none}
-.ar-chip{padding:8px 11px;border-radius:10px;background:rgba(10,16,28,.62);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);color:#eef3fb;font-size:.72rem}
-.ar-chip b{font-weight:700;color:var(--cyan)}
-
-#arCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:15;pointer-events:none}
-
-.ar-lab{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:min(74%,480px);height:min(50%,400px);z-index:8;pointer-events:none}
-.ar-glass{position:absolute;inset:0;border:2px solid rgba(255,255,255,.6);border-top-width:5px;border-radius:20px 20px 34px 34px;
- background:linear-gradient(rgba(235,249,255,.06),rgba(120,205,240,.14));box-shadow:0 20px 60px -25px rgba(0,0,0,.7),inset 0 0 0 1px rgba(0,0,0,.15)}
-#arTank{position:absolute;inset:6px 8px 12px;border-radius:15px 15px 28px 28px;overflow:hidden;background:linear-gradient(rgba(231,247,255,.14),rgba(120,205,240,.20))}
-.ar-lab-title{position:absolute;left:12px;top:9px;font-family:var(--font-display);font-size:.68rem;color:#fff;background:rgba(8,13,23,.55);padding:5px 8px;border-radius:8px;z-index:2;letter-spacing:.3px}
-
-.ar-targets{position:absolute;inset:0;z-index:10;pointer-events:none}
-.ar-target{
-  position:absolute;transform:translate(-50%,-50%);min-width:70px;padding:9px 9px;border-radius:13px;
-  background:rgba(10,16,28,.68);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.12);color:#eef3fb;text-align:center;
-  font-family:var(--font-display);font-size:.76rem;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s,background .15s,border-color .15s;
-}
-.ar-target::before{
-  content:'';position:absolute;inset:-6px;border-radius:17px;padding:3px;opacity:0;transition:opacity .15s;
-  background:conic-gradient(var(--cyan) calc(var(--progress,0)*360deg), rgba(255,255,255,.14) 0deg);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
-}
-.ar-target small{display:block;color:#a9b7ce;font-size:.58rem;font-weight:500;margin-top:2px}
-.ar-target.active{background:rgba(37,99,235,.85);border-color:var(--cyan);transform:translate(-50%,-50%) scale(1.09)}
-.ar-target.active::before{opacity:1}
-.ar-target.active small{color:#dbeafe}
-.ar-target.filled{animation:pop .38s ease}
-@keyframes pop{0%{transform:translate(-50%,-50%) scale(1.09)}45%{transform:translate(-50%,-50%) scale(1.28)}100%{transform:translate(-50%,-50%) scale(1)}}
-
-.ar-toast{position:absolute;z-index:22;transform:translate(-50%,-50%);pointer-events:none;
-  font-family:var(--font-display);font-weight:700;font-size:.85rem;color:#fff;
-  background:rgba(37,99,235,.92);padding:6px 12px;border-radius:20px;box-shadow:0 6px 18px rgba(0,0,0,.4);
-  animation:toastUp 1s ease forwards}
-@keyframes toastUp{0%{opacity:0;transform:translate(-50%,-40%) scale(.85)}15%{opacity:1;transform:translate(-50%,-70%) scale(1)}100%{opacity:0;transform:translate(-50%,-160%) scale(1)}}
-
-.ar-help{position:absolute;bottom:13px;left:50%;transform:translateX(-50%);z-index:20;width:max-content;max-width:92%;
- background:rgba(10,16,28,.66);backdrop-filter:blur(8px);color:#c7d2e6;border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:9px 13px;text-align:center;font-size:.72rem;line-height:1.5}
-
-.ar-start{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(600px 400px at 50% 30%,rgba(37,99,235,.18),transparent),rgba(5,7,12,.55);backdrop-filter:blur(2px)}
-.ar-start-box{width:min(92%,360px);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;text-align:center;box-shadow:0 20px 60px -20px rgba(0,0,0,.7)}
-.ar-start-box .ar-emoji{font-size:38px}
-.ar-start-box h2{margin:8px 0 6px;font-family:var(--font-display);font-size:1.15rem}
-.ar-start-box p{margin:0 0 16px;color:var(--muted);font-size:.78rem;line-height:1.6}
-.primary{border:0;background:linear-gradient(155deg,var(--cyan),#2f8fa8);color:#04141a;padding:12px 18px;border-radius:11px;font-weight:700;cursor:pointer;font-family:var(--font-display);font-size:.9rem;box-shadow:0 10px 24px -10px rgba(79,216,230,.5)}
-.primary:disabled{opacity:.6;cursor:default}
-.ar-note{font-size:.66rem;color:var(--muted-dim);margin-top:12px}
-.stop-ar{display:none;position:absolute;top:12px;right:12px;z-index:40;border:1px solid rgba(255,255,255,.12);background:rgba(10,16,28,.66);backdrop-filter:blur(8px);color:#eef3fb;padding:8px 12px;border-radius:10px;font-size:.75rem;font-weight:600;cursor:pointer}
-.stop-ar:hover{border-color:var(--danger);color:var(--danger)}
-
 @media(max-width:700px){
  body{padding:12px 8px 28px}
- .topbar{align-items:stretch;flex-direction:column}.mode-tabs{flex:1}.mode-btn{flex:1;text-align:center}
- .topbar-right{width:100%}
  .compound-grid{grid-template-columns:repeat(2,1fr)}
- .ar-stage{min-height:88vh}
- .ar-lab{width:78%;height:36%;top:44%}
- .ar-target{min-width:60px;padding:7px 6px;font-size:.68rem}.ar-target small{font-size:.5rem}
- .ar-header{flex-direction:column;align-items:flex-start}
+ .speed-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -194,82 +133,44 @@ button{font:inherit}
       <div class="logo">🧪</div>
       <div><h1>Precipitation Reaction</h1><p class="sub">การเกิดปฏิกิริยาของสารประกอบไอออนิก</p></div>
     </div>
-    <!--  <div class="topbar-right">
-     
-      <div class="mode-tabs">
-        <button class="mode-btn active" data-mode="normal">🖱️ เล่นแบบเดิม</button>
-        <button class="mode-btn" data-mode="ar">☝️ เล่นแบบ AR</button>
-      </div>
-  
-      <button class="fs-btn" id="appFsBtn" title="เต็มจอทั้งหมด">⛶</button>
-    </div>     -->
   </div>
 
-  <section id="normalMode" class="mode-panel active">
-    <div id="labFullscreenWrap">
-      <div class="card lab">
-        <div class="beaker-shell">
-          <div id="tank">
-            <div class="bubble" style="left:18%;width:6px;height:6px;animation-duration:4.8s;animation-delay:.2s"></div>
-            <div class="bubble" style="left:42%;width:9px;height:9px;animation-duration:6.2s;animation-delay:1.4s"></div>
-            <div class="bubble" style="left:65%;width:5px;height:5px;animation-duration:5.4s;animation-delay:.8s"></div>
-            <div class="bubble" style="left:80%;width:7px;height:7px;animation-duration:7s;animation-delay:2.2s"></div>
-            <div class="tank-label">H₂O</div>
-          </div>
+  <div id="labFullscreenWrap">
+    <div class="card lab">
+      <div class="beaker-shell">
+        <div id="tank">
+          <div class="bubble" style="left:18%;width:6px;height:6px;animation-duration:4.8s;animation-delay:.2s"></div>
+          <div class="bubble" style="left:42%;width:9px;height:9px;animation-duration:6.2s;animation-delay:1.4s"></div>
+          <div class="bubble" style="left:65%;width:5px;height:5px;animation-duration:5.4s;animation-delay:.8s"></div>
+          <div class="bubble" style="left:80%;width:7px;height:7px;animation-duration:7s;animation-delay:2.2s"></div>
+          <div class="tank-label">H₂O</div>
         </div>
-        <div class="hud">
-         <!--  <div class="status">สถานะ: <strong id="statusText">พร้อมทดลอง</strong></div> -->
-          <div class="score-pill">ตะกอน <b id="scoreVal">0</b></div>
-        </div>
-        <div class="legend" id="legend"></div>
       </div>
-      <div class="card controls" style="margin-top:12px">
-        <h2>สารละลาย</h2>
-        <div class="compound-grid" id="compoundGrid"></div>
-        <div class="toolbar">
-          <div class="toolbar-left">
-            <button class="reset-btn" id="resetBtn">↺ เริ่มใหม่</button>
-            <button class="reset-btn" id="labFsBtn">⛶ เต็มจอ </button>
-          </div>
-       <!--    <div class="status">ชนกันง่ายขึ้น • Collision × <strong id="collisionVal">1.6</strong></div> 
-        </div>
-        <p class="hint">กดสารเพื่อเติมไอออนลงในน้ำ ระบบจะตรวจการชนกันของคู่ไอออนที่ทำให้เกิดตะกอน (เช่น Pb²⁺ กับ I⁻ ให้ตะกอนสีเหลืองของ PbI₂ แบบปฏิกิริยาฝนทอง) โดยปรับพื้นที่ตรวจชนให้กว้างขึ้นเพื่อให้เกิดปฏิกิริยาได้ง่ายกว่าเดิม</p>
-     --> </div> 
+      <div class="hud">
+        <div class="status">สถานะ: <strong id="statusText">พร้อมทดลอง</strong></div>
+        <div class="score-pill">ตะกอน <b id="scoreVal">0</b></div>
+      </div>
+      <div class="legend" id="legend"></div>
     </div>
-  </section>
 
-  <section id="arMode" class="mode-panel">
-    <div class="card ar-stage" id="arStage">
-      <video id="cameraVideo" autoplay playsinline muted></video>
-      <canvas id="arCanvas"></canvas>
+    <div class="card controls" style="margin-top:12px">
+      <h2>สารละลาย</h2>
+      <div class="compound-grid" id="compoundGrid"></div>
 
-      <div class="ar-header">
-        <div class="ar-chip">☝ <b id="handStatus">ยังไม่เปิดกล้อง</b></div>
-        <div class="ar-chip">เล็งนิ้วชี้ค้างไว้ 1.5 วิ</div>
+      <div class="speed-row">
+        <h2>ความเร็วของอนุภาค</h2>
+        <div class="speed-grid" id="speedGrid"></div>
       </div>
 
-      <div class="ar-lab">
-        <div class="ar-glass"></div>
-        <div id="arTank"><div class="ar-lab-title">Precipitation Lab</div></div>
-      </div>
-
-      <div class="ar-targets" id="arTargets"></div>
-
-      <div class="ar-help">เล็งนิ้วชี้ไปที่สาร แล้วค้างไว้ประมาณ 1.5 วินาที วงแหวนรอบสารจะค่อยๆ เต็ม เมื่อเต็มสารจะถูกเติมลงบีกเกอร์ทันที</div>
-
-      <button class="stop-ar" id="stopAr">ปิดกล้อง</button>
-
-      <div class="ar-start" id="arStart">
-        <div class="ar-start-box">
-          <div class="ar-emoji">☝️</div>
-          <h2>เล่นแบบ AR</h2>
-          <p>เปิดกล้องหน้า แล้วใช้นิ้วชี้เล็งไปที่สารค้างไว้สักครู่ สารจะถูกเติมเข้าไปในบีกเกอร์ตรงกลางทันที</p>
-          <button class="primary" id="startAr">เปิดกล้อง</button>
-          <div class="ar-note">ต้องอนุญาตกล้อง และเปิดผ่าน HTTPS หรือ localhost</div>
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <button class="reset-btn" id="resetBtn">↺ เริ่มใหม่</button>
+          <button class="reset-btn" id="labFsBtn">⛶ เต็มจอ</button>
         </div>
       </div>
+      <p class="hint">กดสารเพื่อเติมไอออนลงในน้ำ ระบบจะตรวจการชนกันของคู่ไอออนที่ทำให้เกิดตะกอน (เช่น Pb²⁺ กับ I⁻ ให้ตะกอนสีเหลืองของ PbI₂ แบบปฏิกิริยาฝนทอง) ปรับความเร็วของอนุภาคได้ตามต้องการ ยิ่งเร็วยิ่งชนกันบ่อยขึ้น</p>
     </div>
-  </section>
+  </div>
 </div>
 
 <button class="fs-exit" id="fsExitBtn">✕ ออกจากเต็มจอ</button>
@@ -300,9 +201,15 @@ const PRECIPITATES = {
   'Pb2+_Cl-':'PbCl₂','Pb2+_I-':'PbI₂','Pb2+_CO3^2-':'PbCO₃','Pb2+_SO4^2-':'PbSO₄',
   'Ca2+_CO3^2-':'CaCO₃','Ca2+_SO4^2-':'CaSO₄','Cu2+_CO3^2-':'CuCO₃'
 };
+const SPEED_LEVELS = [
+  { label:'ช้า',      value:0.5 },
+  { label:'ปกติ',     value:1   },
+  { label:'เร็ว',      value:1.8 },
+  { label:'เร็วมาก',   value:2.8 }
+];
 
 /* =========================
-   UI
+   UI setup
    ========================= */
 function toSub(d){const map={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};return d.split('').map(x=>map[x]).join('')}
 function prettyName(name){return name.replace(/(\d+)/g,m=>toSub(m))}
@@ -325,40 +232,47 @@ Object.keys(COMPOUNDS).forEach(name=>{
   });
   grid.appendChild(b);
 });
+
 const legend=document.getElementById('legend');
 Object.keys(ION_COLOR).forEach(t=>{const s=document.createElement('span');s.innerHTML=`<span class="dot" style="background:${ION_COLOR[t]};color:${ION_COLOR[t]}"></span>${ION_LABEL[t]}`;legend.appendChild(s)});
 
-document.querySelectorAll('.mode-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.mode-panel').forEach(x=>x.classList.remove('active'));
-    btn.classList.add('active'); document.getElementById(btn.dataset.mode+'Mode').classList.add('active');
-  });
+/* ---- speed selector ---- */
+let speedMultiplier = 1;
+const speedGrid=document.getElementById('speedGrid');
+SPEED_LEVELS.forEach(level=>{
+  const b=document.createElement('button');
+  b.className='speed-btn'+(level.value===speedMultiplier?' active':'');
+  b.textContent=level.label;
+  b.dataset.speed=level.value;
+  b.addEventListener('click',()=>setSpeed(level.value));
+  speedGrid.appendChild(b);
 });
+function setSpeed(newValue){
+  const ratio = newValue/speedMultiplier;
+  ions.forEach(ion=>{ ion.vx*=ratio; ion.vy*=ratio; });
+  speedMultiplier = newValue;
+  document.querySelectorAll('.speed-btn').forEach(b=>{
+    b.classList.toggle('active', parseFloat(b.dataset.speed)===newValue);
+  });
+}
 
 /* =========================
-   Fullscreen (simulated overlay — reliable on iOS/Android/desktop alike)
+   Fullscreen (single lab panel — reliable on iOS/Android/desktop alike)
    ========================= */
-const appEl=document.querySelector('.app');
 const labWrap=document.getElementById('labFullscreenWrap');
-const appFsBtn=document.getElementById('appFsBtn');
 const labFsBtn=document.getElementById('labFsBtn');
 const fsExitBtn=document.getElementById('fsExitBtn');
-let fsMode=null; // 'app' | 'lab' | null
-function updateExitBtn(){ fsExitBtn.classList.toggle('show', !!fsMode); }
-function exitAllFs(){ appEl.classList.remove('app-fs'); labWrap.classList.remove('lab-fs'); fsMode=null; updateExitBtn(); }
-appFsBtn.addEventListener('click',()=>{
-  if(fsMode==='app'){ exitAllFs(); return; }
-  exitAllFs(); appEl.classList.add('app-fs'); fsMode='app'; updateExitBtn();
-});
+let fsActive=false;
+function updateExitBtn(){ fsExitBtn.classList.toggle('show', fsActive); }
+function exitFs(){ labWrap.classList.remove('lab-fs'); fsActive=false; updateExitBtn(); }
 labFsBtn.addEventListener('click',()=>{
-  if(fsMode==='lab'){ exitAllFs(); return; }
-  exitAllFs(); labWrap.classList.add('lab-fs'); fsMode='lab'; updateExitBtn();
+  if(fsActive){ exitFs(); return; }
+  labWrap.classList.add('lab-fs'); fsActive=true; updateExitBtn();
 });
-fsExitBtn.addEventListener('click', exitAllFs);
+fsExitBtn.addEventListener('click', exitFs);
 
 /* =========================
-   Normal game physics
+   Game physics
    ========================= */
 const tank=document.getElementById('tank'), scoreVal=document.getElementById('scoreVal'), statusText=document.getElementById('statusText');
 let ions=[], settles=[], precipList=[], idCounter=0, score=0;
@@ -394,7 +308,7 @@ function spawnIons(type,n){
     el.style.fontSize='.78rem'; el.textContent=ION_LABEL[type]; tank.appendChild(el);
     el.addEventListener('animationend',()=>el.classList.remove('spawning'),{once:true});
     const {x,y}=findFreeSpot(w,h,r,ions);
-    const angle=Math.random()*Math.PI*2, speed=.75+Math.random()*.7;
+    const angle=Math.random()*Math.PI*2, speed=(.75+Math.random()*.7)*speedMultiplier;
     const ion={id:idCounter++,type,el,x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r};
     ions.push(ion);
   }
@@ -492,261 +406,6 @@ function step(){
   requestAnimationFrame(step);
 }
 requestAnimationFrame(step);
-
-/* =========================
-   AR hand tracking
-   ========================= */
-const arStage=document.getElementById('arStage');
-const arTank=document.getElementById('arTank');
-const arCanvas=document.getElementById('arCanvas');
-const arCtx=arCanvas.getContext('2d');
-const video=document.getElementById('cameraVideo');
-const arStart=document.getElementById('arStart');
-const startAr=document.getElementById('startAr');
-const stopAr=document.getElementById('stopAr');
-const handStatus=document.getElementById('handStatus');
-const arTargets=document.getElementById('arTargets');
-
-let arStream=null,hands=null,cameraRunning=false;
-let lastTarget=null,targetSince=0,lastARAction=0;
-const DWELL_MS=1500;
-
-function makeArTargets(){
-  arTargets.innerHTML='';
-  const pos=[
-    [10,10],[50,6],[90,10],
-    [6,50],[94,50],
-    [10,90],[50,94],[90,90]
-  ];
-  Object.keys(COMPOUNDS).forEach((name,i)=>{
-    const p=pos[i % pos.length];
-    const el=document.createElement('div');
-    el.className='ar-target';
-    el.dataset.compound=name;
-    el.style.left=p[0]+'%';
-    el.style.top=p[1]+'%';
-    el.style.setProperty('--progress','0');
-    el.innerHTML=`${prettyName(name)}<small>เล็งค้างไว้</small>`;
-    arTargets.appendChild(el);
-  });
-}
-makeArTargets();
-
-function setARSize(){
-  const r=arStage.getBoundingClientRect();
-  arCanvas.width=Math.max(1,Math.round(r.width));
-  arCanvas.height=Math.max(1,Math.round(r.height));
-}
-function loadMediaPipe(){
-  return new Promise((resolve,reject)=>{
-    if(window.Hands){resolve();return}
-    const script=document.createElement('script');
-    script.src='https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js';
-    script.onload=resolve;
-    script.onerror=()=>reject(new Error('โหลด MediaPipe Hands ไม่สำเร็จ'));
-    document.head.appendChild(script);
-  });
-}
-function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-function targetFromPoint(x,y){
-  const stageRect=arStage.getBoundingClientRect();
-  let best=null,bestD=Infinity;
-  document.querySelectorAll('.ar-target').forEach(el=>{
-    const r=el.getBoundingClientRect();
-    const cx=r.left+r.width/2-stageRect.left;
-    const cy=r.top+r.height/2-stageRect.top;
-    const d=Math.hypot(x-cx,y-cy);
-    const hit=Math.max(58,r.width*.95);
-    if(d<hit && d<bestD){best=el;bestD=d}
-  });
-  return best;
-}
-function arToast(text,xPct,yPct){
-  const el=document.createElement('div');
-  el.className='ar-toast';
-  el.style.left=xPct+'%';el.style.top=yPct+'%';
-  el.textContent='+ '+text;
-  arStage.appendChild(el);
-  setTimeout(()=>el.remove(),1000);
-}
-function findFreeARSpot(sizePct){
-  const existing=[...arTank.querySelectorAll('.ion')].map(el=>({
-    x:parseFloat(el.style.left)||0,y:parseFloat(el.style.top)||0
-  }));
-  let bestLeft=8+Math.random()*84,bestTop=12+Math.random()*72,bestMinDist=-Infinity;
-  for(let k=0;k<20;k++){
-    const left=8+Math.random()*84,top=12+Math.random()*72;
-    let minDist=Infinity,ok=true;
-    for(const o of existing){
-      const d=Math.hypot(left-o.x,top-o.y);
-      minDist=Math.min(minDist,d);
-      if(d<sizePct*1.15)ok=false;
-    }
-    if(ok)return{left,top};
-    if(minDist>bestMinDist){bestMinDist=minDist;bestLeft=left;bestTop=top}
-  }
-  return{left:bestLeft,top:bestTop};
-}
-function addARIon(type,n){
-  const r=arTank.getBoundingClientRect();
-  const sizePct=r.width?(42/r.width*100):10;
-  for(let i=0;i<n;i++){
-    const el=document.createElement('div');
-    el.className='ion spawning';
-    const size=42;
-    el.style.width=el.style.height=size+'px';
-    el.style.border=`2px solid ${ION_COLOR[type]}`;
-    el.style.color='#eef6ff';
-    el.style.fontSize='.65rem';
-    el.textContent=ION_LABEL[type];
-    el.style.position='absolute';
-    const{left,top}=findFreeARSpot(sizePct);
-    el.style.left=left+'%';
-    el.style.top=top+'%';
-    el.style.zIndex='5';
-    el.dataset.vx=(Math.random()-.5)*.45;
-    el.dataset.vy=(Math.random()-.5)*.45;
-    arTank.appendChild(el);
-    el.addEventListener('animationend',()=>el.classList.remove('spawning'),{once:true});
-  }
-}
-function arDissolve(name){
-  const c=COMPOUNDS[name];
-  addARIon(c.cation.type,c.cation.n);
-  addARIon(c.anion.type,c.anion.n);
-  const arIons=[...arTank.querySelectorAll('.ion')];
-  for(let i=0;i<arIons.length;i++){
-    for(let j=i+1;j<arIons.length;j++){
-      const a=arIons[i],b=arIons[j];
-      if(!a.isConnected||!b.isConnected)continue;
-      const aType=Object.keys(ION_LABEL).find(k=>ION_LABEL[k]===a.textContent);
-      const bType=Object.keys(ION_LABEL).find(k=>ION_LABEL[k]===b.textContent);
-      if(!aType||!bType||isCation(aType)===isCation(bType))continue;
-      const key=precipKey(aType,bType);
-      if(!PRECIPITATES[key])continue;
-      const ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
-      const dx=ra.left-rb.left,dy=ra.top-rb.top;
-      if(Math.hypot(dx,dy)<75){
-        const p=document.createElement('div');
-        p.className='precip';p.textContent=PRECIPITATES[key];
-        p.style.width=p.style.height='52px';p.style.fontSize='.62rem';
-        p.style.left=((parseFloat(a.style.left)+parseFloat(b.style.left))/2)+'%';
-        p.style.top=((parseFloat(a.style.top)+parseFloat(b.style.top))/2)+'%';
-        p.style.transform='translate(-50%,-50%)';
-        arTank.appendChild(p);a.remove();b.remove();
-        break;
-      }
-    }
-  }
-}
-function animateARIons(){
-  if(!cameraRunning)return;
-  const els=[...arTank.querySelectorAll('.ion')];
-  const r=arTank.getBoundingClientRect();
-  const minPct=r.width?(42/r.width*100)*.9:8;
-  const pos=els.map(el=>({el,x:parseFloat(el.style.left),y:parseFloat(el.style.top)}));
-  for(let i=0;i<pos.length;i++){
-    for(let j=i+1;j<pos.length;j++){
-      const a=pos[i],b=pos[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.0001;
-      if(d<minPct){
-        const nx=dx/d,ny=dy/d,push=(minPct-d)/2;
-        a.x-=nx*push;a.y-=ny*push;b.x+=nx*push;b.y+=ny*push;
-      }
-    }
-  }
-  pos.forEach(({el,x,y})=>{
-    x+=parseFloat(el.dataset.vx||0);y+=parseFloat(el.dataset.vy||0);
-    if(x<5||x>92)el.dataset.vx=-(parseFloat(el.dataset.vx||0));
-    if(y<8||y>86)el.dataset.vy=-(parseFloat(el.dataset.vy||0));
-    el.style.left=Math.max(5,Math.min(92,x))+'%';
-    el.style.top=Math.max(8,Math.min(86,y))+'%';
-  });
-  requestAnimationFrame(animateARIons);
-}
-async function onHandsResults(results){
-  setARSize();
-  arCtx.clearRect(0,0,arCanvas.width,arCanvas.height);
-  if(!results.multiHandLandmarks?.length){
-    handStatus.textContent='ไม่พบมือ';
-    document.querySelectorAll('.ar-target').forEach(x=>{x.classList.remove('active');x.style.setProperty('--progress','0')});
-    lastTarget=null;
-    return;
-  }
-  const lm=results.multiHandLandmarks[0];
-  const index=lm[8],thumb=lm[4];
-  const x=(1-index.x)*arCanvas.width;
-  const y=index.y*arCanvas.height;
-  arCtx.beginPath();arCtx.arc(x,y,10,0,Math.PI*2);
-  arCtx.fillStyle='#4fd8e6';arCtx.fill();
-  arCtx.beginPath();arCtx.arc(x,y,20,0,Math.PI*2);
-  arCtx.strokeStyle='rgba(255,255,255,.9)';arCtx.lineWidth=2;arCtx.stroke();
-  const pinch=dist(index,thumb)<0.065;
-  const target=targetFromPoint(x,y);
-  document.querySelectorAll('.ar-target').forEach(el=>el.classList.toggle('active',el===target));
-  if(target!==lastTarget){ lastTarget=target; targetSince=performance.now(); }
-  const now=performance.now();
-  const elapsed=target?now-targetSince:0;
-  const progress=target?Math.min(1,elapsed/DWELL_MS):0;
-  document.querySelectorAll('.ar-target').forEach(el=>{ el.style.setProperty('--progress', el===target?progress:'0'); });
-  handStatus.textContent=target?(progress>=1?'กำลังเติมสาร…':`เล็งอยู่ ${Math.round(progress*100)}%`):(pinch?'จิ้มอยู่':'พบมือ — เล็งไปที่สาร');
-  if(target && progress>=1 && now-lastARAction>DWELL_MS){
-    arDissolve(target.dataset.compound);
-    const label=prettyName(target.dataset.compound);
-    const stageRect=arStage.getBoundingClientRect();
-    const tr=target.getBoundingClientRect();
-    arToast(label, (tr.left+tr.width/2-stageRect.left)/stageRect.width*100, (tr.top-stageRect.top)/stageRect.height*100);
-    target.classList.add('filled');
-    setTimeout(()=>target.classList.remove('filled'),400);
-    lastARAction=now;
-    targetSince=now;
-  }
-}
-async function startAR(){
-  try{
-    startAr.disabled=true;startAr.textContent='กำลังเปิด…';
-    await loadMediaPipe();
-    if(!navigator.mediaDevices?.getUserMedia){ throw new Error('Browser นี้ไม่รองรับกล้อง'); }
-    arStream=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:{ideal:'user'},width:{ideal:1280},height:{ideal:720}},
-      audio:false
-    });
-    video.srcObject=arStream;
-    await video.play();
-    video.style.display='block';
-    arStart.style.display='none';
-    stopAr.style.display='block';
-    cameraRunning=true;
-    setARSize();
-    hands=new Hands({ locateFile:file=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
-    hands.setOptions({ maxNumHands:1, modelComplexity:1, minDetectionConfidence:.5, minTrackingConfidence:.5 });
-    hands.onResults(onHandsResults);
-    const loop=async()=>{
-      if(!cameraRunning)return;
-      try{ if(video.readyState>=2)await hands.send({image:video}); }catch(e){console.warn('Hand tracking frame error',e)}
-      requestAnimationFrame(loop);
-    };
-    loop();
-    animateARIons();
-  }catch(err){
-    console.error(err);
-    handStatus.textContent='เปิดกล้องไม่สำเร็จ';
-    alert('เปิดกล้องไม่ได้\\n\\nตรวจสอบสิทธิ์กล้อง และเปิดเว็บผ่าน HTTPS หรือ localhost');
-    startAr.disabled=false;startAr.textContent='เปิดกล้อง';
-  }
-}
-function stopAR(){
-  cameraRunning=false;
-  if(arStream)arStream.getTracks().forEach(t=>t.stop());
-  arStream=null;video.srcObject=null;video.style.display='none';
-  stopAr.style.display='none';arStart.style.display='flex';
-  startAr.disabled=false;startAr.textContent='เปิดกล้อง';
-  handStatus.textContent='ยังไม่เปิดกล้อง';
-  document.querySelectorAll('.ar-target').forEach(x=>{x.classList.remove('active');x.style.setProperty('--progress','0')});
-  arTank.querySelectorAll('.ion,.precip').forEach(e=>e.remove());
-}
-startAr.addEventListener('click',startAR);
-stopAr.addEventListener('click',stopAR);
-window.addEventListener('resize',setARSize);
 </script>
 </body>
 </html>
