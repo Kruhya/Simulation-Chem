@@ -39,10 +39,13 @@ button{font:inherit}
 }
 .brand h1{font-family:var(--font-display);font-size:1.2rem;margin:0;font-weight:700;letter-spacing:.2px}
 .sub{margin:2px 0 0;color:var(--muted);font-size:.76rem}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .mode-tabs{display:flex;gap:3px;padding:4px;border:1px solid var(--line);background:var(--card-soft);border-radius:13px}
 .mode-btn{border:0;background:transparent;color:var(--muted);padding:9px 14px;border-radius:10px;font-size:.8rem;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
 .mode-btn:hover{color:var(--ink)}
 .mode-btn.active{background:linear-gradient(155deg,#1c2c48,#182236);color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan-line)}
+.fs-btn{border:1px solid var(--line);background:var(--card-soft);color:var(--muted);width:42px;height:42px;border-radius:11px;cursor:pointer;font-size:1.05rem;display:flex;align-items:center;justify-content:center;transition:.15s;flex:none}
+.fs-btn:hover{border-color:var(--cyan-line);color:var(--cyan)}
 
 /* ---------- shared card ---------- */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 10px 30px -18px rgba(0,0,0,.7)}
@@ -82,7 +85,7 @@ button{font:inherit}
 /* ---------- controls ---------- */
 .controls{padding:15px 14px}
 .controls h2{font-family:var(--font-display);font-size:.82rem;margin:0 0 10px;color:var(--ink);font-weight:600;letter-spacing:.2px}
-.compound-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.compound-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .compound-btn{
   position:relative;overflow:hidden;border:1px solid var(--line);background:var(--card-soft);color:var(--ink);
   padding:11px 6px;border-radius:12px;cursor:pointer;font-weight:700;font-size:.86rem;font-family:var(--font-display);
@@ -92,9 +95,29 @@ button{font:inherit}
 .compound-btn .ripple{position:absolute;border-radius:50%;background:rgba(79,216,230,.45);transform:scale(0);pointer-events:none;animation:rippleOut .55s ease-out forwards}
 @keyframes rippleOut{to{transform:scale(3.2);opacity:0}}
 .toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:13px;color:var(--muted);font-size:.72rem;gap:10px;flex-wrap:wrap}
+.toolbar-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .reset-btn{border:1px solid var(--line);background:var(--card-soft);color:var(--ink);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;transition:.15s}
 .reset-btn:hover{border-color:var(--cyan-line);color:var(--cyan)}
 .hint{margin:11px 0 0;color:var(--muted-dim);font-size:.71rem;line-height:1.6}
+
+/* ---------- Fullscreen (simulated, works across mobile browsers) ---------- */
+.app.app-fs{
+  position:fixed;inset:0;z-index:9996;overflow:auto;background:var(--bg-glow),var(--bg);
+  padding:16px 14px 40px;max-width:none;width:100%;height:100%;margin:0;
+}
+#labFullscreenWrap.lab-fs{
+  position:fixed;inset:0;z-index:9997;background:var(--bg-glow),var(--bg);
+  padding:12px;overflow:auto;display:flex;flex-direction:column;gap:10px;
+}
+#labFullscreenWrap.lab-fs .lab{flex:1;display:flex;flex-direction:column;min-height:0;}
+#labFullscreenWrap.lab-fs .beaker-shell{flex:1;min-height:220px;aspect-ratio:auto;}
+#labFullscreenWrap.lab-fs .controls{flex:none;}
+.fs-exit{
+  position:fixed;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:9999;
+  border:1px solid rgba(255,255,255,.15);background:rgba(10,16,28,.8);backdrop-filter:blur(8px);
+  color:#eef3fb;padding:9px 14px;border-radius:10px;font-size:.78rem;font-weight:700;cursor:pointer;display:none;
+}
+.fs-exit.show{display:block}
 
 /* =========================================================
    AR MODE
@@ -108,7 +131,7 @@ button{font:inherit}
 
 #arCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:15;pointer-events:none}
 
-.ar-lab{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:min(80%,520px);height:min(56%,440px);z-index:8;pointer-events:none}
+.ar-lab{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:min(74%,480px);height:min(50%,400px);z-index:8;pointer-events:none}
 .ar-glass{position:absolute;inset:0;border:2px solid rgba(255,255,255,.6);border-top-width:5px;border-radius:20px 20px 34px 34px;
  background:linear-gradient(rgba(235,249,255,.06),rgba(120,205,240,.14));box-shadow:0 20px 60px -25px rgba(0,0,0,.7),inset 0 0 0 1px rgba(0,0,0,.15)}
 #arTank{position:absolute;inset:6px 8px 12px;border-radius:15px 15px 28px 28px;overflow:hidden;background:linear-gradient(rgba(231,247,255,.14),rgba(120,205,240,.20))}
@@ -116,16 +139,16 @@ button{font:inherit}
 
 .ar-targets{position:absolute;inset:0;z-index:10;pointer-events:none}
 .ar-target{
-  position:absolute;transform:translate(-50%,-50%);min-width:76px;padding:10px 11px;border-radius:13px;
+  position:absolute;transform:translate(-50%,-50%);min-width:70px;padding:9px 9px;border-radius:13px;
   background:rgba(10,16,28,.68);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.12);color:#eef3fb;text-align:center;
-  font-family:var(--font-display);font-size:.82rem;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s,background .15s,border-color .15s;
+  font-family:var(--font-display);font-size:.76rem;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s,background .15s,border-color .15s;
 }
 .ar-target::before{
   content:'';position:absolute;inset:-6px;border-radius:17px;padding:3px;opacity:0;transition:opacity .15s;
   background:conic-gradient(var(--cyan) calc(var(--progress,0)*360deg), rgba(255,255,255,.14) 0deg);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
 }
-.ar-target small{display:block;color:#a9b7ce;font-size:.6rem;font-weight:500;margin-top:2px}
+.ar-target small{display:block;color:#a9b7ce;font-size:.58rem;font-weight:500;margin-top:2px}
 .ar-target.active{background:rgba(37,99,235,.85);border-color:var(--cyan);transform:translate(-50%,-50%) scale(1.09)}
 .ar-target.active::before{opacity:1}
 .ar-target.active small{color:#dbeafe}
@@ -154,11 +177,12 @@ button{font:inherit}
 
 @media(max-width:700px){
  body{padding:12px 8px 28px}
- .topbar{align-items:stretch;flex-direction:column}.mode-tabs{width:100%}.mode-btn{flex:1;text-align:center}
- .compound-grid{grid-template-columns:repeat(3,1fr)}
+ .topbar{align-items:stretch;flex-direction:column}.mode-tabs{flex:1}.mode-btn{flex:1;text-align:center}
+ .topbar-right{width:100%}
+ .compound-grid{grid-template-columns:repeat(2,1fr)}
  .ar-stage{min-height:88vh}
- .ar-lab{width:74%;height:38%;top:44%}
- .ar-target{min-width:66px;padding:8px 7px;font-size:.72rem}.ar-target small{font-size:.52rem}
+ .ar-lab{width:78%;height:36%;top:44%}
+ .ar-target{min-width:60px;padding:7px 6px;font-size:.68rem}.ar-target small{font-size:.5rem}
  .ar-header{flex-direction:column;align-items:flex-start}
 }
 </style>
@@ -170,37 +194,45 @@ button{font:inherit}
       <div class="logo">🧪</div>
       <div><h1>Precipitation Lab</h1><p class="sub">ทดลองการตกตะกอนแบบ Interactive</p></div>
     </div>
-    <div class="mode-tabs">
-      <button class="mode-btn active" data-mode="normal">🖱️ เล่นแบบเดิม</button>
-      <button class="mode-btn" data-mode="ar">☝️ เล่นแบบ AR</button>
+    <div class="topbar-right">
+      <div class="mode-tabs">
+        <button class="mode-btn active" data-mode="normal">🖱️ เล่นแบบเดิม</button>
+        <button class="mode-btn" data-mode="ar">☝️ เล่นแบบ AR</button>
+      </div>
+      <button class="fs-btn" id="appFsBtn" title="เต็มจอทั้งหมด">⛶</button>
     </div>
   </div>
 
   <section id="normalMode" class="mode-panel active">
-    <div class="card lab">
-      <div class="beaker-shell">
-        <div id="tank">
-          <div class="bubble" style="left:18%;width:6px;height:6px;animation-duration:4.8s;animation-delay:.2s"></div>
-          <div class="bubble" style="left:42%;width:9px;height:9px;animation-duration:6.2s;animation-delay:1.4s"></div>
-          <div class="bubble" style="left:65%;width:5px;height:5px;animation-duration:5.4s;animation-delay:.8s"></div>
-          <div class="bubble" style="left:80%;width:7px;height:7px;animation-duration:7s;animation-delay:2.2s"></div>
-          <div class="tank-label">H₂O</div>
+    <div id="labFullscreenWrap">
+      <div class="card lab">
+        <div class="beaker-shell">
+          <div id="tank">
+            <div class="bubble" style="left:18%;width:6px;height:6px;animation-duration:4.8s;animation-delay:.2s"></div>
+            <div class="bubble" style="left:42%;width:9px;height:9px;animation-duration:6.2s;animation-delay:1.4s"></div>
+            <div class="bubble" style="left:65%;width:5px;height:5px;animation-duration:5.4s;animation-delay:.8s"></div>
+            <div class="bubble" style="left:80%;width:7px;height:7px;animation-duration:7s;animation-delay:2.2s"></div>
+            <div class="tank-label">H₂O</div>
+          </div>
         </div>
+        <div class="hud">
+          <div class="status">สถานะ: <strong id="statusText">พร้อมทดลอง</strong></div>
+          <div class="score-pill">ตะกอน <b id="scoreVal">0</b></div>
+        </div>
+        <div class="legend" id="legend"></div>
       </div>
-      <div class="hud">
-        <div class="status">สถานะ: <strong id="statusText">พร้อมทดลอง</strong></div>
-        <div class="score-pill">ตะกอน <b id="scoreVal">0</b></div>
+      <div class="card controls" style="margin-top:12px">
+        <h2>เลือกสารที่จะละลาย</h2>
+        <div class="compound-grid" id="compoundGrid"></div>
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button class="reset-btn" id="resetBtn">↺ เริ่มการทดลองใหม่</button>
+            <button class="reset-btn" id="labFsBtn">⛶ เต็มจอ (พร้อมปุ่มสาร)</button>
+          </div>
+          <div class="status">ชนกันง่ายขึ้น • Collision × <strong id="collisionVal">1.6</strong></div>
+        </div>
+        <p class="hint">กดสารเพื่อเติมไอออนลงในน้ำ ระบบจะตรวจการชนกันของคู่ไอออนที่ทำให้เกิดตะกอน (เช่น Pb²⁺ กับ I⁻ ให้ตะกอนสีเหลืองของ PbI₂ แบบปฏิกิริยาฝนทอง) โดยปรับพื้นที่ตรวจชนให้กว้างขึ้นเพื่อให้เกิดปฏิกิริยาได้ง่ายกว่าเดิม</p>
       </div>
-      <div class="legend" id="legend"></div>
-    </div>
-    <div class="card controls" style="margin-top:12px">
-      <h2>เลือกสารที่จะละลาย</h2>
-      <div class="compound-grid" id="compoundGrid"></div>
-      <div class="toolbar">
-        <button class="reset-btn" id="resetBtn">↺ เริ่มการทดลองใหม่</button>
-        <div class="status">ชนกันง่ายขึ้น • Collision × <strong id="collisionVal">1.6</strong></div>
-      </div>
-      <p class="hint">กดสารเพื่อเติมไอออนลงในน้ำ ระบบจะตรวจการชนกันของคู่ไอออนที่ทำให้เกิดตะกอน โดยปรับพื้นที่ตรวจชนให้กว้างขึ้นและเพิ่มการเคลื่อนที่เล็กน้อย เพื่อให้เกิดปฏิกิริยาได้ง่ายกว่าเดิม</p>
     </div>
   </section>
 
@@ -214,13 +246,11 @@ button{font:inherit}
         <div class="ar-chip">เล็งนิ้วชี้ค้างไว้ 1.5 วิ</div>
       </div>
 
-      <!-- Compact reaction area: never fills the whole screen -->
       <div class="ar-lab">
         <div class="ar-glass"></div>
         <div id="arTank"><div class="ar-lab-title">Precipitation Lab</div></div>
       </div>
 
-      <!-- Buttons stay around the outside of the reaction area -->
       <div class="ar-targets" id="arTargets"></div>
 
       <div class="ar-help">เล็งนิ้วชี้ไปที่สาร แล้วค้างไว้ประมาณ 1.5 วินาที วงแหวนรอบสารจะค่อยๆ เต็ม เมื่อเต็มสารจะถูกเติมลงบีกเกอร์ทันที</div>
@@ -240,37 +270,45 @@ button{font:inherit}
   </section>
 </div>
 
+<button class="fs-exit" id="fsExitBtn">✕ ออกจากเต็มจอ</button>
+
 <script>
 /* =========================
-   Chemistry data — preserved
+   Chemistry data
    ========================= */
 const ION_COLOR = {
-  'Ca2+':'#f59e0b','Mg2+':'#34d399','NH4+':'#f472b6','Na+':'#fb7185',
-  'Cl-':'#a78bfa','CO3^2-':'#4fd8e6','SO4^2-':'#22d3ee','NO3-':'#94a3b8'
+  'Ca2+':'#f59e0b','K+':'#8b5cf6','Na+':'#fb7185','Cu2+':'#0ea5e9','Pb2+':'#a8a29e','NH4+':'#f472b6',
+  'Cl-':'#a78bfa','I-':'#f97316','CO3^2-':'#3b82f6','SO4^2-':'#22d3ee','NO3-':'#94a3b8'
 };
 const ION_LABEL = {
-  'Ca2+':'Ca²⁺','Mg2+':'Mg²⁺','NH4+':'NH₄⁺','Na+':'Na⁺',
-  'Cl-':'Cl⁻','CO3^2-':'CO₃²⁻','SO4^2-':'SO₄²⁻','NO3-':'NO₃⁻'
+  'Ca2+':'Ca²⁺','K+':'K⁺','Na+':'Na⁺','Cu2+':'Cu²⁺','Pb2+':'Pb²⁺','NH4+':'NH₄⁺',
+  'Cl-':'Cl⁻','I-':'I⁻','CO3^2-':'CO₃²⁻','SO4^2-':'SO₄²⁻','NO3-':'NO₃⁻'
 };
 const COMPOUNDS = {
-  'CaCl2':  { cation:{type:'Ca2+',n:1}, anion:{type:'Cl-',n:2} },
-  'NH4Cl':  { cation:{type:'NH4+',n:1}, anion:{type:'Cl-',n:1} },
-  'MgCl2':  { cation:{type:'Mg2+',n:1}, anion:{type:'Cl-',n:2} },
-  'Na2CO3': { cation:{type:'Na+',n:2}, anion:{type:'CO3^2-',n:1} },
-  'Na2SO4': { cation:{type:'Na+',n:2}, anion:{type:'SO4^2-',n:1} },
-  'NaNO3':  { cation:{type:'Na+',n:1}, anion:{type:'NO3-',n:1} }
+  'CaCl2':    { cation:{type:'Ca2+',n:1}, anion:{type:'Cl-',n:2} },
+  'KI':       { cation:{type:'K+',n:1},   anion:{type:'I-',n:1} },
+  'NaCl':     { cation:{type:'Na+',n:1},  anion:{type:'Cl-',n:1} },
+  'Na2CO3':   { cation:{type:'Na+',n:2},  anion:{type:'CO3^2-',n:1} },
+  'CuSO4':    { cation:{type:'Cu2+',n:1}, anion:{type:'SO4^2-',n:1} },
+  'Pb(NO3)2': { cation:{type:'Pb2+',n:1}, anion:{type:'NO3-',n:2} },
+  'NH4Cl':    { cation:{type:'NH4+',n:1}, anion:{type:'Cl-',n:1} },
+  'NaNO3':    { cation:{type:'Na+',n:1},  anion:{type:'NO3-',n:1} }
 };
 const PRECIPITATES = {
-  'Ca2+_CO3^2-':'CaCO₃','Ca2+_SO4^2-':'CaSO₄','Mg2+_CO3^2-':'MgCO₃'
+  'Pb2+_Cl-':'PbCl₂','Pb2+_I-':'PbI₂','Pb2+_CO3^2-':'PbCO₃','Pb2+_SO4^2-':'PbSO₄',
+  'Ca2+_CO3^2-':'CaCO₃','Ca2+_SO4^2-':'CaSO₄','Cu2+_CO3^2-':'CuCO₃'
 };
 
 /* =========================
    UI
    ========================= */
+function toSub(d){const map={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};return d.split('').map(x=>map[x]).join('')}
+function prettyName(name){return name.replace(/(\d+)/g,m=>toSub(m))}
+
 const grid=document.getElementById('compoundGrid');
 Object.keys(COMPOUNDS).forEach(name=>{
   const b=document.createElement('button');
-  b.className='compound-btn'; b.textContent=name.replace(/(\d+)/g,m=>toSub(m));
+  b.className='compound-btn'; b.textContent=prettyName(name);
   b.addEventListener('click',(e)=>{
     const rect=b.getBoundingClientRect();
     const ripple=document.createElement('span');
@@ -285,7 +323,6 @@ Object.keys(COMPOUNDS).forEach(name=>{
   });
   grid.appendChild(b);
 });
-function toSub(d){const map={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};return d.split('').map(x=>map[x]).join('')}
 const legend=document.getElementById('legend');
 Object.keys(ION_COLOR).forEach(t=>{const s=document.createElement('span');s.innerHTML=`<span class="dot" style="background:${ION_COLOR[t]};color:${ION_COLOR[t]}"></span>${ION_LABEL[t]}`;legend.appendChild(s)});
 
@@ -298,6 +335,27 @@ document.querySelectorAll('.mode-btn').forEach(btn=>{
 });
 
 /* =========================
+   Fullscreen (simulated overlay — reliable on iOS/Android/desktop alike)
+   ========================= */
+const appEl=document.querySelector('.app');
+const labWrap=document.getElementById('labFullscreenWrap');
+const appFsBtn=document.getElementById('appFsBtn');
+const labFsBtn=document.getElementById('labFsBtn');
+const fsExitBtn=document.getElementById('fsExitBtn');
+let fsMode=null; // 'app' | 'lab' | null
+function updateExitBtn(){ fsExitBtn.classList.toggle('show', !!fsMode); }
+function exitAllFs(){ appEl.classList.remove('app-fs'); labWrap.classList.remove('lab-fs'); fsMode=null; updateExitBtn(); }
+appFsBtn.addEventListener('click',()=>{
+  if(fsMode==='app'){ exitAllFs(); return; }
+  exitAllFs(); appEl.classList.add('app-fs'); fsMode='app'; updateExitBtn();
+});
+labFsBtn.addEventListener('click',()=>{
+  if(fsMode==='lab'){ exitAllFs(); return; }
+  exitAllFs(); labWrap.classList.add('lab-fs'); fsMode='lab'; updateExitBtn();
+});
+fsExitBtn.addEventListener('click', exitAllFs);
+
+/* =========================
    Normal game physics
    ========================= */
 const tank=document.getElementById('tank'), scoreVal=document.getElementById('scoreVal'), statusText=document.getElementById('statusText');
@@ -308,12 +366,9 @@ function tankSize(){const r=tank.getBoundingClientRect();return{w:r.width,h:r.he
 function dissolve(name){
   const c=COMPOUNDS[name];
   spawnIons(c.cation.type,c.cation.n); spawnIons(c.anion.type,c.anion.n);
-  statusText.textContent=`เติม ${name.replace(/(\d+)/g,m=>toSub(m))} แล้ว`;
+  statusText.textContent=`เติม ${prettyName(name)} แล้ว`;
 }
 function findFreeSpot(w,h,r,against){
-  // Try several random spots and pick one that doesn't start out overlapping
-  // any existing circle (with a little breathing room). Falls back to the
-  // least-bad candidate if the tank is very crowded.
   let bestX=null,bestY=null,bestMinDist=-Infinity;
   for(let k=0;k<30;k++){
     const x=r+Math.random()*(w-2*r), y=r+Math.random()*(h-2*r);
@@ -333,8 +388,7 @@ function spawnIons(type,n){
   for(let i=0;i<n;i++){
     const el=document.createElement('div'); el.className='ion spawning';
     el.style.width=el.style.height=r*2+'px'; el.style.border=`2px solid ${ION_COLOR[type]}`;
-    el.style.color=ION_COLOR[type]; el.style.setProperty('color',ION_COLOR[type]);
-    el.style.setProperty('--txt','#eef6ff'); el.style.color='#eef6ff';
+    el.style.color='#eef6ff';
     el.style.fontSize='.78rem'; el.textContent=ION_LABEL[type]; tank.appendChild(el);
     el.addEventListener('animationend',()=>el.classList.remove('spawning'),{once:true});
     const {x,y}=findFreeSpot(w,h,r,ions);
@@ -351,10 +405,8 @@ function resetAll(){
 document.getElementById('resetBtn').addEventListener('click',resetAll);
 function precipKey(a,b){const cat=a.includes('+')?a:b, an=a.includes('-')?a:b;return cat+'_'+an}
 function isCation(t){return t.includes('+')}
-const SETTLE_GAP=3; // px gap kept between piled-up precipitates so they never touch
+const SETTLE_GAP=3;
 function floorYAt(x,r,h){
-  // Lowest free resting height at this x: tank floor, or on top of any
-  // already-settled precipitate whose circle would otherwise overlap.
   let floorY=h-r;
   for(const s of settles){
     if(Math.abs(x-s.x)<r+s.r+SETTLE_GAP){
@@ -365,7 +417,6 @@ function floorYAt(x,r,h){
   return floorY;
 }
 function findSettleX(w,h,r){
-  // Prefer the x with the lowest (flattest) resulting pile.
   let bestX=r+Math.random()*(w-2*r),bestY=-Infinity;
   for(let k=0;k<25;k++){
     const x=r+Math.random()*(w-2*r);
@@ -389,15 +440,12 @@ function step(){
     if(ion.y-ion.r<0){ion.y=ion.r;ion.vy*=-1}
     if(ion.y+ion.r>h){ion.y=h-ion.r;ion.vy*=-1}
   }
-
   const toRemove=new Set();
   for(let i=0;i<ions.length;i++){
     if(toRemove.has(i))continue;
     for(let j=i+1;j<ions.length;j++){
       if(toRemove.has(j))continue;
       const a=ions[i],b=ions[j],dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy)||.0001;
-      // Widened reaction zone: opposite ions can react a bit before their
-      // circles visually touch — this is intentional (see COLLISION_MULTIPLIER).
       const reactDistance=(a.r+b.r)*COLLISION_MULTIPLIER;
       if(dist<reactDistance){
         const opposite=isCation(a.type)!==isCation(b.type);
@@ -410,16 +458,11 @@ function step(){
           }
         }
       }
-      // Physical collision response only fires once circles actually touch —
-      // this is what was missing, and without it pairs sitting inside the
-      // wider reaction zone kept swapping velocities every frame and just
-      // vibrated in place instead of visually separating.
       const touchDistance=a.r+b.r;
       if(dist<touchDistance){
         const nx=dx/dist,ny=dy/dist;
         const overlap=(touchDistance-dist)/2+.3;
         a.x-=nx*overlap;a.y-=ny*overlap;b.x+=nx*overlap;b.y+=ny*overlap;
-        // Elastic bounce along the collision normal (equal-mass circles).
         const dvx=b.vx-a.vx,dvy=b.vy-a.vy;
         const velAlongNormal=dvx*nx+dvy*ny;
         if(velAlongNormal<0){
@@ -432,7 +475,6 @@ function step(){
   }
   if(toRemove.size)ions=ions.filter((_,idx)=>!toRemove.has(idx));
   for(const ion of ions)ion.el.style.transform=`translate(${ion.x-ion.r}px,${ion.y-ion.r}px)`;
-
   for(const p of precipList){
     if(p.state==='falling'){
       p.vy+=.06;p.y+=p.vy;p.x+=(p.targetX-p.x)*.025;
@@ -464,24 +506,25 @@ const handStatus=document.getElementById('handStatus');
 const arTargets=document.getElementById('arTargets');
 
 let arStream=null,hands=null,cameraRunning=false;
-let lastTarget=null,targetSince=0,pinchLatch=false,lastARAction=0;
-const DWELL_MS=1500; // ต้องเล็งค้างไว้ ~1.5 วินาที ก่อนสารจะถูกเติม
+let lastTarget=null,targetSince=0,lastARAction=0;
+const DWELL_MS=1500;
 
 function makeArTargets(){
   arTargets.innerHTML='';
-  // Outside the central beaker so buttons do not cover the experiment.
   const pos=[
-    [10,20],[50,7],[90,20],
-    [10,80],[50,95],[90,80]
+    [10,10],[50,6],[90,10],
+    [6,50],[94,50],
+    [10,90],[50,94],[90,90]
   ];
   Object.keys(COMPOUNDS).forEach((name,i)=>{
+    const p=pos[i % pos.length];
     const el=document.createElement('div');
     el.className='ar-target';
     el.dataset.compound=name;
-    el.style.left=pos[i][0]+'%';
-    el.style.top=pos[i][1]+'%';
+    el.style.left=p[0]+'%';
+    el.style.top=p[1]+'%';
     el.style.setProperty('--progress','0');
-    el.innerHTML=`${name.replace(/(\d+)/g,m=>toSub(m))}<small>เล็งค้างไว้</small>`;
+    el.innerHTML=`${prettyName(name)}<small>เล็งค้างไว้</small>`;
     arTargets.appendChild(el);
   });
 }
@@ -492,7 +535,6 @@ function setARSize(){
   arCanvas.width=Math.max(1,Math.round(r.width));
   arCanvas.height=Math.max(1,Math.round(r.height));
 }
-
 function loadMediaPipe(){
   return new Promise((resolve,reject)=>{
     if(window.Hands){resolve();return}
@@ -503,9 +545,7 @@ function loadMediaPipe(){
     document.head.appendChild(script);
   });
 }
-
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-
 function targetFromPoint(x,y){
   const stageRect=arStage.getBoundingClientRect();
   let best=null,bestD=Infinity;
@@ -514,12 +554,11 @@ function targetFromPoint(x,y){
     const cx=r.left+r.width/2-stageRect.left;
     const cy=r.top+r.height/2-stageRect.top;
     const d=Math.hypot(x-cx,y-cy);
-    const hit=Math.max(62,r.width*.95);
+    const hit=Math.max(58,r.width*.95);
     if(d<hit && d<bestD){best=el;bestD=d}
   });
   return best;
 }
-
 function arToast(text,xPct,yPct){
   const el=document.createElement('div');
   el.className='ar-toast';
@@ -528,9 +567,7 @@ function arToast(text,xPct,yPct){
   arStage.appendChild(el);
   setTimeout(()=>el.remove(),1000);
 }
-
-function findFreeARSpot(rectW,rectH,sizePct){
-  // Work in percent-space so it matches how AR ions are positioned/moved.
+function findFreeARSpot(sizePct){
   const existing=[...arTank.querySelectorAll('.ion')].map(el=>({
     x:parseFloat(el.style.left)||0,y:parseFloat(el.style.top)||0
   }));
@@ -561,7 +598,7 @@ function addARIon(type,n){
     el.style.fontSize='.65rem';
     el.textContent=ION_LABEL[type];
     el.style.position='absolute';
-    const{left,top}=findFreeARSpot(r.width,r.height,sizePct);
+    const{left,top}=findFreeARSpot(sizePct);
     el.style.left=left+'%';
     el.style.top=top+'%';
     el.style.zIndex='5';
@@ -571,15 +608,10 @@ function addARIon(type,n){
     el.addEventListener('animationend',()=>el.classList.remove('spawning'),{once:true});
   }
 }
-
 function arDissolve(name){
-  // IMPORTANT: AR mode has its own visible tank.
   const c=COMPOUNDS[name];
   addARIon(c.cation.type,c.cation.n);
   addARIon(c.anion.type,c.anion.n);
-
-  // Also run the same chemistry reaction in the main game state,
-  // but keep it visually inside the AR tank.
   const arIons=[...arTank.querySelectorAll('.ion')];
   for(let i=0;i<arIons.length;i++){
     for(let j=i+1;j<arIons.length;j++){
@@ -605,15 +637,12 @@ function arDissolve(name){
     }
   }
 }
-
 function animateARIons(){
   if(!cameraRunning)return;
   const els=[...arTank.querySelectorAll('.ion')];
   const r=arTank.getBoundingClientRect();
   const minPct=r.width?(42/r.width*100)*.9:8;
   const pos=els.map(el=>({el,x:parseFloat(el.style.left),y:parseFloat(el.style.top)}));
-
-  // Gentle mutual repulsion so drifting ions don't pile up on top of each other.
   for(let i=0;i<pos.length;i++){
     for(let j=i+1;j<pos.length;j++){
       const a=pos[i],b=pos[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.0001;
@@ -623,7 +652,6 @@ function animateARIons(){
       }
     }
   }
-
   pos.forEach(({el,x,y})=>{
     x+=parseFloat(el.dataset.vx||0);y+=parseFloat(el.dataset.vy||0);
     if(x<5||x>92)el.dataset.vx=-(parseFloat(el.dataset.vx||0));
@@ -633,110 +661,70 @@ function animateARIons(){
   });
   requestAnimationFrame(animateARIons);
 }
-
 async function onHandsResults(results){
   setARSize();
   arCtx.clearRect(0,0,arCanvas.width,arCanvas.height);
-
   if(!results.multiHandLandmarks?.length){
     handStatus.textContent='ไม่พบมือ';
     document.querySelectorAll('.ar-target').forEach(x=>{x.classList.remove('active');x.style.setProperty('--progress','0')});
     lastTarget=null;
     return;
   }
-
   const lm=results.multiHandLandmarks[0];
   const index=lm[8],thumb=lm[4];
-
-  // MediaPipe gives normalized coordinates on the source image.
-  // Convert to the mirrored selfie view shown to the user.
   const x=(1-index.x)*arCanvas.width;
   const y=index.y*arCanvas.height;
-
-  // Very visible fingertip marker.
   arCtx.beginPath();arCtx.arc(x,y,10,0,Math.PI*2);
   arCtx.fillStyle='#4fd8e6';arCtx.fill();
   arCtx.beginPath();arCtx.arc(x,y,20,0,Math.PI*2);
   arCtx.strokeStyle='rgba(255,255,255,.9)';arCtx.lineWidth=2;arCtx.stroke();
-
   const pinch=dist(index,thumb)<0.065;
-
   const target=targetFromPoint(x,y);
   document.querySelectorAll('.ar-target').forEach(el=>el.classList.toggle('active',el===target));
-
-  if(target!==lastTarget){
-    lastTarget=target;
-    targetSince=performance.now();
-  }
-
+  if(target!==lastTarget){ lastTarget=target; targetSince=performance.now(); }
   const now=performance.now();
   const elapsed=target?now-targetSince:0;
   const progress=target?Math.min(1,elapsed/DWELL_MS):0;
-
-  document.querySelectorAll('.ar-target').forEach(el=>{
-    el.style.setProperty('--progress', el===target?progress:'0');
-  });
-
+  document.querySelectorAll('.ar-target').forEach(el=>{ el.style.setProperty('--progress', el===target?progress:'0'); });
   handStatus.textContent=target?(progress>=1?'กำลังเติมสาร…':`เล็งอยู่ ${Math.round(progress*100)}%`):(pinch?'จิ้มอยู่':'พบมือ — เล็งไปที่สาร');
-
   if(target && progress>=1 && now-lastARAction>DWELL_MS){
     arDissolve(target.dataset.compound);
-    const label=target.dataset.compound.replace(/(\d+)/g,m=>toSub(m));
+    const label=prettyName(target.dataset.compound);
     const stageRect=arStage.getBoundingClientRect();
     const tr=target.getBoundingClientRect();
     arToast(label, (tr.left+tr.width/2-stageRect.left)/stageRect.width*100, (tr.top-stageRect.top)/stageRect.height*100);
     target.classList.add('filled');
     setTimeout(()=>target.classList.remove('filled'),400);
     lastARAction=now;
-    targetSince=now; // require a fresh 1.5s dwell before adding again
+    targetSince=now;
   }
-  pinchLatch=pinch;
 }
-
 async function startAR(){
   try{
     startAr.disabled=true;startAr.textContent='กำลังเปิด…';
     await loadMediaPipe();
-
-    if(!navigator.mediaDevices?.getUserMedia){
-      throw new Error('Browser นี้ไม่รองรับกล้อง');
-    }
-
+    if(!navigator.mediaDevices?.getUserMedia){ throw new Error('Browser นี้ไม่รองรับกล้อง'); }
     arStream=await navigator.mediaDevices.getUserMedia({
       video:{facingMode:{ideal:'user'},width:{ideal:1280},height:{ideal:720}},
       audio:false
     });
-
     video.srcObject=arStream;
     await video.play();
-
     video.style.display='block';
     arStart.style.display='none';
     stopAr.style.display='block';
     cameraRunning=true;
     setARSize();
-
-    hands=new Hands({
-      locateFile:file=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-    });
-    hands.setOptions({
-      maxNumHands:1,
-      modelComplexity:1,
-      minDetectionConfidence:.5,
-      minTrackingConfidence:.5
-    });
+    hands=new Hands({ locateFile:file=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
+    hands.setOptions({ maxNumHands:1, modelComplexity:1, minDetectionConfidence:.5, minTrackingConfidence:.5 });
     hands.onResults(onHandsResults);
-
     const loop=async()=>{
       if(!cameraRunning)return;
-      try{
-        if(video.readyState>=2)await hands.send({image:video});
-      }catch(e){console.warn('Hand tracking frame error',e)}
+      try{ if(video.readyState>=2)await hands.send({image:video}); }catch(e){console.warn('Hand tracking frame error',e)}
       requestAnimationFrame(loop);
     };
     loop();
     animateARIons();
-
   }catch(err){
     console.error(err);
     handStatus.textContent='เปิดกล้องไม่สำเร็จ';
@@ -744,7 +732,6 @@ async function startAR(){
     startAr.disabled=false;startAr.textContent='เปิดกล้อง';
   }
 }
-
 function stopAR(){
   cameraRunning=false;
   if(arStream)arStream.getTracks().forEach(t=>t.stop());
