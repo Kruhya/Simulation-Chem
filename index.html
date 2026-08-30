@@ -359,7 +359,7 @@ function spawnIons(type,n){
   for(let i=0;i<n;i++){
     const el=document.createElement('div'); el.className='ion spawning';
     el.style.width=el.style.height=r*2+'px';
-    el.style.background=`${ION_COLOR[type]}3d`;
+    el.style.background='#ffffff';
     el.style.border='1px solid rgba(30,41,59,.14)';
     el.style.color='#1e293b';
     el.style.fontSize='.78rem'; el.textContent=ION_LABEL[type]; tank.appendChild(el);
