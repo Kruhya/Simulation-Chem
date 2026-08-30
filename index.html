@@ -98,6 +98,16 @@ button{font:inherit}
 .speed-btn:hover{border-color:var(--cyan-line);color:var(--cyan)}
 .speed-btn.active{background:var(--cyan-soft);border-color:var(--cyan-line);color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan-line)}
 
+.size-row{margin-top:16px}
+.size-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.size-btn{
+  border:1px solid var(--line);background:var(--card-soft);color:var(--muted);
+  padding:9px 6px;border-radius:11px;cursor:pointer;font-weight:700;font-size:.78rem;font-family:var(--font-display);
+  transition:.15s;
+}
+.size-btn:hover{border-color:var(--cyan-line);color:var(--cyan)}
+.size-btn.active{background:var(--cyan-soft);border-color:var(--cyan-line);color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan-line)}
+
 .toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--muted);font-size:.72rem;gap:10px;flex-wrap:wrap}
 .toolbar-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .reset-btn{border:1px solid var(--line);background:var(--card-soft);color:var(--ink);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;transition:.15s}
@@ -123,6 +133,7 @@ button{font:inherit}
  body{padding:12px 8px 28px}
  .compound-grid{grid-template-columns:repeat(2,1fr)}
  .speed-grid{grid-template-columns:repeat(2,1fr)}
+ .size-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -147,7 +158,7 @@ button{font:inherit}
         </div>
       </div>
       <div class="hud">
-         <div class="status">ไอออน</div> 
+        <div class="status">ไอออน</div>
         <div class="score-pill">ตะกอน <b id="scoreVal">0</b></div>
       </div>
       <div class="legend" id="legend"></div>
@@ -162,14 +173,19 @@ button{font:inherit}
         <div class="speed-grid" id="speedGrid"></div>
       </div>
 
+      <div class="size-row">
+        <h2>ขนาดของไอออน</h2>
+        <div class="size-grid" id="sizeGrid"></div>
+      </div>
+
       <div class="toolbar">
         <div class="toolbar-left">
           <button class="reset-btn" id="resetBtn">↺ เริ่มใหม่</button>
           <button class="reset-btn" id="labFsBtn">⛶ เต็มจอ</button>
         </div>
       </div>
-      
-       <p class="hint"></p>
+
+      <p class="hint"></p>
     </div>
   </div>
 </div>
@@ -208,6 +224,13 @@ const SPEED_LEVELS = [
   { label:'เร็ว',      value:1.8 },
   { label:'เร็วมาก',   value:2.8 }
 ];
+const SIZE_LEVELS = [
+  { label:'เล็ก',    value:0.7 },
+  { label:'กลาง',    value:1   },
+  { label:'ใหญ่',    value:1.4 },
+  { label:'ใหญ่มาก', value:1.9 }
+];
+const BASE_ION_RADIUS = 25;
 
 /* =========================
    UI setup
@@ -257,6 +280,32 @@ function setSpeed(newValue){
   });
 }
 
+/* ---- size selector ---- */
+let sizeMultiplier = 1;
+const sizeGrid=document.getElementById('sizeGrid');
+SIZE_LEVELS.forEach(level=>{
+  const b=document.createElement('button');
+  b.className='size-btn'+(level.value===sizeMultiplier?' active':'');
+  b.textContent=level.label;
+  b.dataset.size=level.value;
+  b.addEventListener('click',()=>setSize(level.value));
+  sizeGrid.appendChild(b);
+});
+function setSize(newValue){
+  sizeMultiplier = newValue;
+  const newR = BASE_ION_RADIUS*sizeMultiplier;
+  const {w,h}=tankSize();
+  ions.forEach(ion=>{
+    ion.r = newR;
+    ion.el.style.width = ion.el.style.height = (newR*2)+'px';
+    ion.x = Math.min(Math.max(ion.x, newR), Math.max(newR, w-newR));
+    ion.y = Math.min(Math.max(ion.y, newR), Math.max(newR, h-newR));
+  });
+  document.querySelectorAll('.size-btn').forEach(b=>{
+    b.classList.toggle('active', parseFloat(b.dataset.size)===newValue);
+  });
+}
+
 /* =========================
    Fullscreen (single lab panel — reliable on iOS/Android/desktop alike)
    ========================= */
@@ -275,7 +324,7 @@ fsExitBtn.addEventListener('click', exitFs);
 /* =========================
    Game physics
    ========================= */
-const tank=document.getElementById('tank'), scoreVal=document.getElementById('scoreVal'), statusText=document.getElementById('statusText');
+const tank=document.getElementById('tank'), scoreVal=document.getElementById('scoreVal');
 let ions=[], settles=[], precipList=[], idCounter=0, score=0;
 const COLLISION_MULTIPLIER=1.6;
 
@@ -283,7 +332,6 @@ function tankSize(){const r=tank.getBoundingClientRect();return{w:r.width,h:r.he
 function dissolve(name){
   const c=COMPOUNDS[name];
   spawnIons(c.cation.type,c.cation.n); spawnIons(c.anion.type,c.anion.n);
-  statusText.textContent=`เติม ${prettyName(name)} แล้ว`;
 }
 function findFreeSpot(w,h,r,against){
   let bestX=null,bestY=null,bestMinDist=-Infinity;
@@ -301,7 +349,7 @@ function findFreeSpot(w,h,r,against){
   return{x:bestX??r+Math.random()*(w-2*r),y:bestY??r+Math.random()*(h-2*r)};
 }
 function spawnIons(type,n){
-  const {w,h}=tankSize(), r=25;
+  const {w,h}=tankSize(), r=BASE_ION_RADIUS*sizeMultiplier;
   for(let i=0;i<n;i++){
     const el=document.createElement('div'); el.className='ion spawning';
     el.style.width=el.style.height=r*2+'px'; el.style.border=`2px solid ${ION_COLOR[type]}`;
@@ -317,7 +365,7 @@ function spawnIons(type,n){
 function resetAll(){
   ions.forEach(i=>i.el.remove()); ions=[];
   precipList.forEach(p=>p.el.remove()); precipList=[];
-  settles=[]; score=0; scoreVal.textContent='0'; statusText.textContent='พร้อมทดลอง';
+  settles=[]; score=0; scoreVal.textContent='0';
 }
 document.getElementById('resetBtn').addEventListener('click',resetAll);
 function precipKey(a,b){const cat=a.includes('+')?a:b, an=a.includes('-')?a:b;return cat+'_'+an}
@@ -346,7 +394,7 @@ function spawnPrecipitate(formula,x,y){
   const {w,h}=tankSize(),r=30,el=document.createElement('div');
   el.className='precip';el.style.width=el.style.height=r*2+'px';el.style.fontSize='.78rem';el.textContent=formula;tank.appendChild(el);
   const p={el,x,y,targetX:findSettleX(w,h,r),r,vy:.3,state:'falling'};precipList.push(p);
-  score++;scoreVal.textContent=String(score);statusText.textContent=`เกิดตะกอน ${formula} 🎉`;
+  score++;scoreVal.textContent=String(score);
 }
 function step(){
   const {w,h}=tankSize();
