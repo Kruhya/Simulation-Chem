@@ -360,7 +360,7 @@ function spawnIons(type,n){
     const el=document.createElement('div'); el.className='ion spawning';
     el.style.width=el.style.height=r*2+'px';
     el.style.background='#ffffff';
-    el.style.border='1px solid rgba(30,41,59,.14)';
+    el.style.border=`1.5px solid ${ION_COLOR[type]}`;
     el.style.color='#1e293b';
     el.style.fontSize='.78rem'; el.textContent=ION_LABEL[type]; tank.appendChild(el);
     el.addEventListener('animationend',()=>el.classList.remove('spawning'),{once:true});
