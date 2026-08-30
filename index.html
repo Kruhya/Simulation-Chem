@@ -64,8 +64,8 @@ button{font:inherit}
 .ion{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:700;line-height:1;user-select:none;pointer-events:none;background:rgba(255,255,255,.72);backdrop-filter:blur(1px);box-shadow:0 1px 6px rgba(30,41,59,.16)}
 @keyframes ionSpawn{0%{opacity:0;filter:brightness(2.4) saturate(1.6)}100%{opacity:1;filter:brightness(1) saturate(1)}}
 .ion.spawning{animation:ionSpawn .35s ease-out}
-.precip{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f4f7fb;border:1px solid #cbd5e1;color:#1f2937;font-weight:800;user-select:none;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 4px rgba(245,178,60,.12)}
-@keyframes precipSettle{0%{box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 12px rgba(245,178,60,.4)}100%{box-shadow:0 4px 12px rgba(0,0,0,.35),0 0 0 4px rgba(245,178,60,.12)}}
+.precip{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(30,41,59,.14);color:#1f2937;font-weight:800;user-select:none;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.28)}
+@keyframes precipSettle{0%{filter:brightness(1.5)}100%{filter:brightness(1)}}
 .precip.landed{animation:precipSettle .5s ease-out}
 .hud{display:flex;justify-content:space-between;align-items:center;padding:11px 4px 2px;font-size:.8rem;color:var(--muted);gap:10px}
 .hud strong{color:var(--ink)}
@@ -218,6 +218,12 @@ const PRECIPITATES = {
   'Pb2+_Cl-':'PbCl₂','Pb2+_I-':'PbI₂','Pb2+_CO3^2-':'PbCO₃','Pb2+_SO4^2-':'PbSO₄',
   'Ca2+_CO3^2-':'CaCO₃','Ca2+_SO4^2-':'CaSO₄','Cu2+_CO3^2-':'CuCO₃'
 };
+/* Colors reflect the real precipitate: PbI2 is the classic bright-yellow
+   "golden rain" precipitate, CuCO3 is blue-green, the rest are white/off-white. */
+const PRECIPITATE_COLOR = {
+  'Pb2+_Cl-':'#f1f5f9','Pb2+_I-':'#facc15','Pb2+_CO3^2-':'#f1f5f9','Pb2+_SO4^2-':'#f1f5f9',
+  'Ca2+_CO3^2-':'#f1f5f9','Ca2+_SO4^2-':'#f1f5f9','Cu2+_CO3^2-':'#5eead4'
+};
 const SPEED_LEVELS = [
   { label:'ช้า',      value:0.5 },
   { label:'ปกติ',     value:1   },
@@ -352,7 +358,9 @@ function spawnIons(type,n){
   const {w,h}=tankSize(), r=BASE_ION_RADIUS*sizeMultiplier;
   for(let i=0;i<n;i++){
     const el=document.createElement('div'); el.className='ion spawning';
-    el.style.width=el.style.height=r*2+'px'; el.style.border=`2px solid ${ION_COLOR[type]}`;
+    el.style.width=el.style.height=r*2+'px';
+    el.style.background=`${ION_COLOR[type]}3d`;
+    el.style.border='1px solid rgba(30,41,59,.14)';
     el.style.color='#1e293b';
     el.style.fontSize='.78rem'; el.textContent=ION_LABEL[type]; tank.appendChild(el);
     el.addEventListener('animationend',()=>el.classList.remove('spawning'),{once:true});
@@ -390,9 +398,11 @@ function findSettleX(w,h,r){
   }
   return bestX;
 }
-function spawnPrecipitate(formula,x,y){
+function spawnPrecipitate(formula,key,x,y){
   const {w,h}=tankSize(),r=30,el=document.createElement('div');
-  el.className='precip';el.style.width=el.style.height=r*2+'px';el.style.fontSize='.78rem';el.textContent=formula;tank.appendChild(el);
+  el.className='precip';el.style.width=el.style.height=r*2+'px';el.style.fontSize='.78rem';el.textContent=formula;
+  el.style.background=PRECIPITATE_COLOR[key]||'#f1f5f9';
+  tank.appendChild(el);
   const p={el,x,y,targetX:findSettleX(w,h,r),r,vy:.3,state:'falling'};precipList.push(p);
   score++;scoreVal.textContent=String(score);
 }
@@ -419,7 +429,7 @@ function step(){
           if(PRECIPITATES[key]){
             toRemove.add(i);toRemove.add(j);
             const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
-            a.el.remove();b.el.remove();spawnPrecipitate(PRECIPITATES[key],mx,my);continue;
+            a.el.remove();b.el.remove();spawnPrecipitate(PRECIPITATES[key],key,mx,my);continue;
           }
         }
       }
