@@ -214,15 +214,19 @@ const COMPOUNDS = {
   'NH4Cl':    { cation:{type:'NH4+',n:1}, anion:{type:'Cl-',n:1} },
   'NaNO3':    { cation:{type:'Na+',n:1},  anion:{type:'NO3-',n:1} }
 };
+/* Pb2+_Cl-, Pb2+_I-, Pb2+_CO3^2-, Pb2+_SO4^2-, Ca2+_CO3^2-, Cu2+_CO3^2- unchanged.
+   Ca2+_SO4^2- removed: CaCl2 + CuSO4 no longer precipitates.
+   Cu2+_I- added: CuSO4 + KI now precipitates brown. */
 const PRECIPITATES = {
   'Pb2+_Cl-':'PbCl₂','Pb2+_I-':'PbI₂','Pb2+_CO3^2-':'PbCO₃','Pb2+_SO4^2-':'PbSO₄',
-  'Ca2+_CO3^2-':'CaCO₃','Ca2+_SO4^2-':'CaSO₄','Cu2+_CO3^2-':'CuCO₃'
+  'Ca2+_CO3^2-':'CaCO₃','Cu2+_CO3^2-':'CuCO₃','Cu2+_I-':'CuI'
 };
 /* Colors reflect the real precipitate: PbI2 is the classic bright-yellow
-   "golden rain" precipitate, CuCO3 is blue-green, the rest are white/off-white. */
+   "golden rain" precipitate, CuCO3 is blue-green, CuI (with liberated I2) is
+   brown, the rest are white/off-white. */
 const PRECIPITATE_COLOR = {
   'Pb2+_Cl-':'#f1f5f9','Pb2+_I-':'#facc15','Pb2+_CO3^2-':'#f1f5f9','Pb2+_SO4^2-':'#f1f5f9',
-  'Ca2+_CO3^2-':'#f1f5f9','Ca2+_SO4^2-':'#f1f5f9','Cu2+_CO3^2-':'#5eead4'
+  'Ca2+_CO3^2-':'#f1f5f9','Cu2+_CO3^2-':'#5eead4','Cu2+_I-':'#78350f'
 };
 const SPEED_LEVELS = [
   { label:'ช้า',      value:0.5 },
